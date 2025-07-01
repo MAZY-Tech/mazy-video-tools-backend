@@ -1,4 +1,4 @@
-# MAZY Video Tools – Backend
+# MAZY Video Tools API
 
 This Spring Boot service issues pre‑signed S3 URLs to front‑end upload videos straight to Amazon S3.
 

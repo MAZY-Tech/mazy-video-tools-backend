@@ -29,7 +29,7 @@ public class UploadController {
 
     @PostMapping("/presign-upload")
     public ResponseEntity<?> createPresignedUrl(@Valid @RequestBody PresignRequest req, Authentication auth) {
-        String userId = auth.getName(); // subject from Cognito JWT
+        String userId = auth.getName();
 
         String extension = req.getFilename().substring(req.getFilename().lastIndexOf('.') + 1).toLowerCase();
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
@@ -45,9 +45,12 @@ public class UploadController {
         }
 
         String key = "%s/%d_%s".formatted(userId, Instant.now().toEpochMilli(), req.getFilename());
-        String contentType = "video/" + extension;
 
-        URL url = s3Service.generatePresignedPutUrl(key, contentType, req.getSizeBytes());
+        Map<String, String> metadata = Map.of(
+            "video_hash", req.getXAmzMetaVideoHash(),
+            "cognito_user_id", userId
+        );
+        URL url = s3Service.generatePresignedPutUrl(key, req.getContentType(), req.getSizeBytes(), metadata);
 
         return ResponseEntity.ok(Map.of(
                 "uploadUrl", url.toString(),
