@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 
 @Service
 public class S3Service {
@@ -25,7 +26,6 @@ public class S3Service {
     public S3Service(
             @Value("${aws.region}") String region,
             @Value("${aws.bucket}") String bucket) {
-        // Use the default credentials provider chain (ECS Task Role, EC2, env vars, etc.)
         this.presigner = S3Presigner.builder()
                 .region(Region.of(region))
                 .credentialsProvider(DefaultCredentialsProvider.create())
@@ -39,11 +39,12 @@ public class S3Service {
         this.bucketName = bucket;
     }
 
-    public URL generatePresignedPutUrl(String key, String contentType, long sizeBytes) {
+    public URL generatePresignedPutUrl(String key, String contentType, long sizeBytes, Map<String, String> metadata) {
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .contentType(contentType)
+                .metadata(metadata)
                 .contentLength(sizeBytes)
                 .build();
 
