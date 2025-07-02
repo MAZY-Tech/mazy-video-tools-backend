@@ -9,6 +9,7 @@ import java.util.UUID;
 public class VideoDTO {
 
     private UUID videoId;
+    private String fileName;
     private String status;
     private String downloadUrl;
     private double progress;
@@ -16,8 +17,9 @@ public class VideoDTO {
     public VideoDTO() {
     }
 
-    public VideoDTO(UUID videoId, String status, String downloadUrl, double progress) {
+    public VideoDTO(UUID videoId, String fileName, String status, String downloadUrl, double progress) {
         this.videoId = videoId;
+        this.fileName = fileName;
         this.status = status;
         this.downloadUrl = downloadUrl;
         this.progress = progress;
@@ -29,6 +31,14 @@ public class VideoDTO {
 
     public void setVideoId(UUID videoId) {
         this.videoId = videoId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getStatus() {

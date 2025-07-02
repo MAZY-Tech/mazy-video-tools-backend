@@ -21,8 +21,8 @@ public class VideoController {
         String userId = auth.getName();
 
         List<VideoDTO> videos = List.of(
-                new VideoDTO(UUID.randomUUID(), "processing", null, 0.0),
-                new VideoDTO(UUID.randomUUID(), "completed", "https://example.com/video.mp4", 100.0)
+                new VideoDTO(UUID.randomUUID(),"file.mp4", "PROCESSING", null, 0.0),
+                new VideoDTO(UUID.randomUUID(), "video-teste.mp4","COMPLETED", "https://mazy-bucket.s3.us-east-1.amazonaws.com/video-teste.mp4", 100)
         );
 
 
@@ -34,10 +34,11 @@ public class VideoController {
                                              Authentication auth) {
 
         var video = new VideoDTO();
+        video.setFileName("video-teste.mp4");
         video.setVideoId(videoId);
         video.setStatus("COMPLETED");
         video.setProgress(1);
-        video.setDownloadUrl(null); // Initially no download URL
+        video.setDownloadUrl("https://mazy-bucket.s3.us-east-1.amazonaws.com/video-teste.mp4"); // Initially no download URL
 
         return ResponseEntity.ok(video);
     }
