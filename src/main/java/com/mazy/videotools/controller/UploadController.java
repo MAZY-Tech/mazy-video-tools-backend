@@ -5,12 +5,16 @@ import com.mazy.videotools.service.S3Service;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -45,16 +49,19 @@ public class UploadController {
         }
 
         String key = "%s/%d_%s".formatted(userId, Instant.now().toEpochMilli(), req.getFilename());
+        var videoId = UUID.randomUUID().toString();
 
         Map<String, String> metadata = Map.of(
-            "video_hash", req.getXAmzMetaVideoHash(),
-            "cognito_user_id", userId
+                "video_id", videoId,
+                "video_hash", req.getXAmzMetaVideoHash(),
+                "cognito_user_id", userId
         );
         URL url = s3Service.generatePresignedPutUrl(key, req.getContentType(), req.getSizeBytes(), metadata);
 
         return ResponseEntity.ok(Map.of(
                 "uploadUrl", url.toString(),
                 "s3Key", key,
+                "video_id", videoId,
                 "expiresInMinutes", 15
         ));
     }
