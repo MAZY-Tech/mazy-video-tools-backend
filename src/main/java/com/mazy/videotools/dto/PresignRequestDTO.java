@@ -1,10 +1,10 @@
-package com.mazy.videotools.model;
+package com.mazy.videotools.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.*;
 
-public class PresignRequest {
+public class PresignRequestDTO {
 
     @NotBlank
     private String filename;

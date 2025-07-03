@@ -1,5 +1,5 @@
 services:
-  mazy-video-tools-backend:
+  mazy-video-tools-api:
     build:
       context: .
       dockerfile: Dockerfile

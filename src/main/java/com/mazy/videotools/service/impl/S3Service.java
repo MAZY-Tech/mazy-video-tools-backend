@@ -1,5 +1,6 @@
-package com.mazy.videotools.service;
+package com.mazy.videotools.service.impl;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class S3Service {
 
     private final S3Presigner presigner;
     private final S3Client s3Client;
+    @Getter
     private final String bucketName;
 
     public S3Service(
