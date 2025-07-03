@@ -1,16 +1,19 @@
 package com.mazy.videotools.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Document(collection = "video_event")
 public class VideoEvent {
@@ -34,7 +37,7 @@ public class VideoEvent {
     private Integer progress;
 
     @Field("status")
-    private String status;
+    private VideoStatus status;
 
     @Field("timestamp")
     private OffsetDateTime timestamp;
@@ -43,7 +46,7 @@ public class VideoEvent {
     private String videoHash;
 
     @Field("video_id")
-    private UUID videoId;
+    private String videoId;
 
     @Field("zip")
     private ZipInfo zip;

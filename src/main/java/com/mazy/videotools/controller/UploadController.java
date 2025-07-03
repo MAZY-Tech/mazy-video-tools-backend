@@ -54,15 +54,15 @@ public class UploadController {
         String key = "%s/%d_%s".formatted(userId, Instant.now().toEpochMilli(), req.getFilename());
 
         VideoEvent videoEvent = videoEventService.createVideoEvent(
-            s3Service.getBucketName(),
-            key,
-            userId
+                s3Service.getBucketName(),
+                key,
+                userId
         );
 
         Map<String, String> metadata = Map.of(
-            "video_id", videoEvent.getVideoId(),
-            "video_hash", req.getXAmzMetaVideoHash(),
-            "cognito_user_id", userId
+                "video_id", videoEvent.getVideoId(),
+                "video_hash", req.getXAmzMetaVideoHash(),
+                "cognito_user_id", userId
         );
         URL url = s3Service.generatePresignedPutUrl(key, req.getContentType(), req.getSizeBytes(), metadata);
 

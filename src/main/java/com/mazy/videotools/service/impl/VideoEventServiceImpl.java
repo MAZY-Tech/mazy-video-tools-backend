@@ -1,6 +1,7 @@
 package com.mazy.videotools.service.impl;
 
 import com.mazy.videotools.entity.VideoEvent;
+import com.mazy.videotools.entity.VideoStatus;
 import com.mazy.videotools.repository.VideoEventRepository;
 import com.mazy.videotools.service.VideoEventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,22 @@ public class VideoEventServiceImpl implements VideoEventService {
 
     @Override
     @Transactional
-    public VideoEvent createVideoEvent(String cognitoUserId, String bucket, String key) {
-        UUID videoId = UUID.randomUUID();
+    public VideoEvent createVideoEvent(String bucket, String key, String cognitoUserId) {
+        String videoId = UUID.randomUUID().toString();
 
         VideoEvent videoEvent = VideoEvent.builder()
                 .videoId(videoId)
                 .cognitoUserId(cognitoUserId)
                 .bucket(bucket)
                 .key(key)
-                .status("INITIAL")
+                .status(VideoStatus.INITIAL)
                 .build();
 
         return this.videoEventRepository.save(videoEvent);
     }
 
     @Override
-    public VideoEvent getVideoEventByVideoId(UUID videoId) {
+    public VideoEvent getVideoEventByVideoId(String videoId) {
         Optional<VideoEvent> videoEventOptional = this.videoEventRepository.findByVideoId(videoId);
         return videoEventOptional.orElse(null);
     }
