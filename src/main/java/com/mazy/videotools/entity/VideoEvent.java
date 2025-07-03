@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -42,7 +43,7 @@ public class VideoEvent {
     private String videoHash;
 
     @Field("video_id")
-    private String videoId;
+    private UUID videoId;
 
     @Field("zip")
     private ZipInfo zip;

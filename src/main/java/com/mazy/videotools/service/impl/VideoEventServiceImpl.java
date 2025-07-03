@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,7 +22,7 @@ public class VideoEventServiceImpl implements VideoEventService {
     @Override
     @Transactional
     public VideoEvent createVideoEvent(String cognitoUserId, String bucket, String key) {
-        String videoId = String.valueOf(UUID.randomUUID());
+        UUID videoId = UUID.randomUUID();
 
         VideoEvent videoEvent = VideoEvent.builder()
                 .videoId(videoId)
@@ -35,7 +36,8 @@ public class VideoEventServiceImpl implements VideoEventService {
     }
 
     @Override
-    public VideoEvent getVideoEventByVideoId(String videoId) {
-        return null;
+    public VideoEvent getVideoEventByVideoId(UUID videoId) {
+        Optional<VideoEvent> videoEventOptional = this.videoEventRepository.findByVideoId(videoId);
+        return videoEventOptional.orElse(null);
     }
 }
