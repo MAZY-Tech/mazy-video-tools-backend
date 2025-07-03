@@ -24,11 +24,14 @@ public class VideoEvent {
     @Field("bucket")
     private String bucket;
 
-    @Field("cognito_user_id")
-    private String cognitoUserId;
-
     @Field("key")
     private String key;
+
+    @Field("file_name")
+    private String fileName;
+
+    @Field("cognito_user_id")
+    private String cognitoUserId;
 
     @Field("last_update")
     private LocalDateTime lastUpdate;

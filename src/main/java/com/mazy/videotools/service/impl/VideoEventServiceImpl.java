@@ -27,14 +27,15 @@ public class VideoEventServiceImpl implements VideoEventService {
 
     @Override
     @Transactional
-    public VideoEvent createVideoEvent(String bucket, String key, String cognitoUserId) {
+    public VideoEvent createVideoEvent(String bucket, String key, String fileName, String cognitoUserId) {
         String videoId = UUID.randomUUID().toString();
 
         VideoEvent videoEvent = VideoEvent.builder()
                 .videoId(videoId)
-                .cognitoUserId(cognitoUserId)
                 .bucket(bucket)
                 .key(key)
+                .fileName(fileName)
+                .cognitoUserId(cognitoUserId)
                 .status(VideoStatus.INITIAL)
                 .build();
 

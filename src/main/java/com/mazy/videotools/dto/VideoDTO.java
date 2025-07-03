@@ -33,7 +33,7 @@ public class VideoDTO {
     public static VideoDTO fromEntity(VideoEvent videoEvent) {
         VideoDTO videoDTO = new VideoDTO();
 
-        videoDTO.setFileName(videoEvent.getKey());
+        videoDTO.setFileName(videoEvent.getFileName());
         videoDTO.setVideoId(videoEvent.getVideoId());
         videoDTO.setStatus(videoEvent.getStatus().toString());
         videoDTO.setProgress(videoEvent.getProgress());

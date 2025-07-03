@@ -56,6 +56,7 @@ public class UploadController {
         VideoEvent videoEvent = videoEventService.createVideoEvent(
                 s3Service.getBucketName(),
                 key,
+                req.getFilename(),
                 userId
         );
 
