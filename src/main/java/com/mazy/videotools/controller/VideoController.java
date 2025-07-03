@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,22 +22,23 @@ import java.util.UUID;
 public class VideoController {
 
     private final VideoEventService videoEventService;
-    private final S3Service s3Service;
 
-    public VideoController(VideoEventService videoEventService, S3Service s3Service) {
+    public VideoController(VideoEventService videoEventService) {
         this.videoEventService = videoEventService;
-        this.s3Service = s3Service;
     }
 
     @GetMapping()
     public ResponseEntity<?> getAllVideos(Authentication auth) {
         String userId = auth.getName();
 
-        List<VideoDTO> videos = List.of(
-                new VideoDTO(UUID.randomUUID().toString(), "file.mp4", "PROCESSING", null, 0),
-                new VideoDTO(UUID.randomUUID().toString(), "video-teste.mp4", "COMPLETED", "https://mazy-bucket.s3.us-east-1.amazonaws.com/video-teste.mp4", 100)
-        );
+        List<VideoEvent> videoEvents = this.videoEventService.getVideoEventsByUserId(userId);
+        List<VideoDTO> videos = new ArrayList<>();
 
+        for (VideoEvent videoEvent : videoEvents) {
+            VideoDTO dto = VideoDTO.fromEntity(videoEvent);
+            dto.setDownloadUrl(this.videoEventService.getVideoDownloadUrl(videoEvent));
+            videos.add(dto);
+        }
 
         return ResponseEntity.ok(Map.of("videos", videos));
     }
@@ -48,23 +50,8 @@ public class VideoController {
         if (videoEvent == null) {
             return ResponseEntity.notFound().build();
         }
-        VideoDTO videoDTO = new VideoDTO();
-        videoDTO.setFileName(videoEvent.getKey());
-        videoDTO.setVideoId(videoEvent.getVideoId());
-        videoDTO.setStatus(videoEvent.getStatus().toString());
-        videoDTO.setProgress(videoEvent.getProgress());
-
-        if (videoEvent.getZip() != null) {
-            Duration expiration = Duration.ofMinutes(15);
-            String downloadUrl = String.valueOf(
-                    s3Service.generatePresignedFromBucketKeyGetUrl(
-                            videoEvent.getZip().getBucket(),
-                            videoEvent.getZip().getKey(),
-                            expiration
-                    )
-            );
-            videoDTO.setDownloadUrl(downloadUrl);
-        }
+        VideoDTO videoDTO = VideoDTO.fromEntity(videoEvent);
+        videoDTO.setDownloadUrl(this.videoEventService.getVideoDownloadUrl(videoEvent));
         return ResponseEntity.ok(videoDTO);
     }
 }
