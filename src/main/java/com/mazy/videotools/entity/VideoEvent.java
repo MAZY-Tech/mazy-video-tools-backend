@@ -55,6 +55,8 @@ public class VideoEvent {
     private ZipInfo zip;
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     public static class ZipInfo {
 
