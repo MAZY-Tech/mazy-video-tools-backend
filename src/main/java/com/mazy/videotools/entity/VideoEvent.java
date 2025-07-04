@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "video_event")
+@Document(collection = "video_events")
 public class VideoEvent {
 
     @Id
