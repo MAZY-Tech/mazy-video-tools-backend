@@ -2,90 +2,45 @@ package com.mazy.videotools.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.S3Client;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
-public class S3ServiceTest {
+class S3ServiceTest {
 
-    // Test-specific subclass of S3Service that overrides methods that interact with AWS
-    private static class TestS3Service extends S3Service {
-        private final URL testUrl;
-
-        public TestS3Service(String region, String bucket, URL testUrl) {
-            super(region, bucket);
-            this.testUrl = testUrl;
-        }
-
-        @Override
-        public URL generatePresignedPutUrl(String key, String contentType, long sizeBytes, Map<String, String> metadata) {
-            return testUrl;
-        }
-
-        @Override
-        public URL generatePresignedFromBucketKeyGetUrl(String bucketName, String key, Duration expiration) {
-            return testUrl;
-        }
-    }
-
-    private TestS3Service s3Service;
-    private URL testUrl;
-
-    private final String TEST_REGION = "us-east-1";
-    private final String TEST_BUCKET = "test-bucket";
-    private final String TEST_KEY = "test-key";
-    private final String TEST_CONTENT_TYPE = "video/mp4";
-    private final long TEST_SIZE_BYTES = 1024L;
+    private S3Service s3Service;
 
     @BeforeEach
-    void setUp() throws MalformedURLException {
-        testUrl = new URL("https://test-bucket.s3.amazonaws.com/test-key");
-        s3Service = new TestS3Service(TEST_REGION, TEST_BUCKET, testUrl);
+    void setUp() {
+        // Use dummy values for region and bucket
+        s3Service = new S3Service("us-east-1", "test-bucket");
     }
 
     @Test
-    void generatePresignedPutUrl_ShouldReturnUrl() {
-        // Arrange
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("user-id", "test-user");
-
-        // Act
-        URL result = s3Service.generatePresignedPutUrl(TEST_KEY, TEST_CONTENT_TYPE, TEST_SIZE_BYTES, metadata);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUrl, result);
+    void testGeneratePresignedPutUrl() {
+        URL url = s3Service.generatePresignedPutUrl(
+                "test-key",
+                "video/mp4",
+                1024L,
+                Collections.emptyMap()
+        );
+        assertNotNull(url);
+        assertTrue(url.toString().contains("test-bucket"));
     }
 
     @Test
-    void generatePresignedFromBucketKeyGetUrl_ShouldReturnUrl() {
-        // Arrange
-        Duration expiration = Duration.ofMinutes(15);
-
-        // Act
-        URL result = s3Service.generatePresignedFromBucketKeyGetUrl(TEST_BUCKET, TEST_KEY, expiration);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUrl, result);
-    }
-
-    @Test
-    void getBucketName_ShouldReturnConfiguredBucketName() {
-        // Act
-        String result = s3Service.getBucketName();
-
-        // Assert
-        assertEquals(TEST_BUCKET, result);
+    void testGeneratePresignedFromBucketKeyGetUrl() {
+        URL url = s3Service.generatePresignedFromBucketKeyGetUrl(
+                "test-bucket",
+                "test-key",
+                Duration.ofMinutes(5)
+        );
+        assertNotNull(url);
+        assertTrue(url.toString().contains("test-bucket"));
     }
 }

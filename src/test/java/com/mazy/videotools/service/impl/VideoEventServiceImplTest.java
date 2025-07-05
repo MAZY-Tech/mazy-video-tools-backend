@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
@@ -115,5 +116,27 @@ public class VideoEventServiceImplTest {
         assertEquals(1, result.size());
         assertEquals(TEST_VIDEO_ID, result.get(0).getVideoId());
         verify(videoEventRepository, times(1)).findVideoEventByCognitoUserId(TEST_USER_ID);
+    }
+
+    @Test
+    void getVideoDownloadUrl_ShouldReturnPresignedUrl_WhenZipIsNotNull() throws MalformedURLException {
+        // Arrange
+        VideoEvent.ZipInfo zip = new VideoEvent.ZipInfo();
+
+        zip.setBucket(TEST_BUCKET);
+        zip.setKey(TEST_KEY);
+        testVideoEvent.setZip(zip);
+
+        String expectedUrl = "https://presigned-url.com";
+        when(s3Service.generatePresignedFromBucketKeyGetUrl(eq(TEST_BUCKET), eq(TEST_KEY), any(Duration.class)))
+                .thenReturn(new URL(expectedUrl));
+
+        // Act
+        String result = videoEventService.getVideoDownloadUrl(testVideoEvent);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expectedUrl, result);
+        verify(s3Service, times(1)).generatePresignedFromBucketKeyGetUrl(eq(TEST_BUCKET), eq(TEST_KEY), any(Duration.class));
     }
 }

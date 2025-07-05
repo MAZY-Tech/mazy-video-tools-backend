@@ -31,3 +31,21 @@ docker compose up
 * `make build` – compila o JAR
 * `make docker-build` – gera a imagem Docker
 * `make push` – envia a imagem para o ECR
+
+## Code Coverage
+
+This project uses JaCoCo for code coverage analysis. To generate code coverage reports:
+
+1. Run the tests with Maven:
+   ```bash
+   mvn clean test
+   ```
+
+2. The JaCoCo plugin will automatically generate coverage reports during the build process.
+
+3. To view the coverage reports, you can run:
+   ```bash
+   mvn jacoco:report
+   ```
+
+4. The coverage reports will be generated in the `target/site/jacoco` directory. Open the `index.html` file in a web browser to view the reports.
