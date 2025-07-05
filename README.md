@@ -32,20 +32,17 @@ docker compose up
 * `make docker-build` – gera a imagem Docker
 * `make push` – envia a imagem para o ECR
 
-## Code Coverage
+---
 
-This project uses JaCoCo for code coverage analysis. To generate code coverage reports:
+## Qualidade do Código
 
-1. Run the tests with Maven:
-   ```bash
-   mvn clean test
-   ```
+### Testes unitários
+![Testes Unitários](./assets/testes.png)
 
-2. The JaCoCo plugin will automatically generate coverage reports during the build process.
+### SonarQube
+![Sonar_1](./assets/sonar.png)
 
-3. To view the coverage reports, you can run:
-   ```bash
-   mvn jacoco:report
-   ```
+### Cobertura de Testes
+![Cobertura de Testes](./assets/jacoco.png)
 
-4. The coverage reports will be generated in the `target/site/jacoco` directory. Open the `index.html` file in a web browser to view the reports.
+---
